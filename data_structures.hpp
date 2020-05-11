@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <memory>
 
 using namespace std;
 
@@ -10,18 +11,18 @@ namespace singly_linked_list{   // abbreviation Sl
     template <typename T>
     struct Sll_node {
         T value;
-        Sll_node<T> * next_node;
+        shared_ptr<Sll_node<T>> next_node;
     };
 
     template <typename T>
     class Sll_iterator {
         private:
             typedef Sll_node<T> Sll_node;
-            Sll_node * pointer;
+            shared_ptr<Sll_node> pointer;
 
         public:
             Sll_iterator() { pointer = nullptr;};
-            Sll_iterator(Sll_node * ptr) { this->pointer = ptr; };
+            Sll_iterator(shared_ptr<Sll_node> ptr) { this->pointer = ptr; };
 
             // Operators
 
@@ -67,18 +68,18 @@ namespace singly_linked_list{   // abbreviation Sl
     class Sll {
         private:
             typedef Sll_node<T> Node;
-            Node * head_pointer;
-            Node * tail_pointer;
+            shared_ptr<Node> head_pointer;
+            shared_ptr<Node> tail_pointer;
             unsigned int size;
 
         public:
             typedef Sll_iterator<T> Iterator;
 
-            Sll( Sll<T> * List ) {}
+            Sll( shared_ptr<Sll<T>> List ) {}
 
-            Sll( T * arr, int n ) {}
+            Sll( shared_ptr<T> arr, int n ) {}
 
-            Sll( Node * node ) {}
+            Sll( shared_ptr<Node> node ) {}
 
             Sll( int n ) {}
 
@@ -90,26 +91,144 @@ namespace singly_linked_list{   // abbreviation Sl
 
             virtual ~Sll() { }
 
-            Node * front();
-    		Node * back();
+            shared_ptr<Node> front();
+    		shared_ptr<Node> back();
             void push_back( const T& element );
             void push_front( const T& element );
-            Node * pop_back();
-            Node * pop_front();
-            Node * operator[] ( const int& place);
+            shared_ptr<Node> pop_back();
+            shared_ptr<Node> pop_front();
+            shared_ptr<Node> operator[] ( const int& place);
             bool empty();
             unsigned int get_size();
             void clear();
-            void erase( Node * pointer );
-            void insert( Node * pointer, const T& element );
+            void erase( shared_ptr<Node> pointer );
+            void insert( shared_ptr<Node> pointer, const T& element );
             void remove( const T& element );
             Sll& sort();
             Sll& reverse();
 
             inline friend std::ostream& operator<< (std::ostream& os, const Sll<T>& list ) {
-                Node * pointer = list.head_pointer;
+                shared_ptr<Node> pointer = list.head_pointer;
                 while (pointer != nullptr) {
-                    cout << pointer->value << " -> ";
+                    cout << "(" << pointer->value << ") -> ";
+                    pointer = pointer->next_node;
+                }
+                cout << "nullptr" <<endl;
+                return os;
+            }
+        };
+}
+
+namespace doubly_linked_list{   // abbreviation Dll
+
+    template <typename T>
+    struct Dll_node {
+        T value;
+        shared_ptr<Dll_node<T>> prev_node;
+        shared_ptr<Dll_node<T>> next_node;
+    };
+
+    template <typename T>
+    class Dll_iterator {
+        private:
+            typedef Dll_node<T> Dll_node;
+            shared_ptr<Dll_node> pointer;
+
+        public:
+            Dll_iterator() { pointer = nullptr;};
+            Dll_iterator(shared_ptr<Dll_node> ptr) { this->pointer = ptr; };
+
+            // Operators
+
+            void operator ++() {
+                this->pointer = this->pointer->next_node;
+            }
+
+            void operator --() {
+                this->pointer = this->pointer->prev_node;
+            }
+
+            void operator ++(int n) {
+                for (int i = 0; i < n; ++i)
+                    this->pointer = this->pointer->next_node;
+            }
+
+            T operator * () {
+                return this->pointer->value;
+            }
+
+            bool operator == (const Dll_iterator & it) {
+                return this->pointer == it.pointer;
+            }
+
+            bool operator != (const Dll_iterator & it) {
+                return this->pointer != it.pointer;
+            }
+
+            bool operator <= (const Dll_iterator & it) {
+                return this->pointer <= it.pointer;
+            }
+
+            bool operator >= (const Dll_iterator & it) {
+                return this->pointer >= it.pointer;
+            }
+
+            bool operator < (const Dll_iterator & it) {
+                return this->pointer < it.pointer;
+            }
+
+            bool operator > (const Dll_iterator & it) {
+                return this->pointer > it.pointer;
+            }
+    };
+
+    template <typename T>
+    class Dll {
+        private:
+            typedef Dll_node<T> Node;
+            shared_ptr<Node> head_pointer;
+            shared_ptr<Node> tail_pointer;
+            unsigned int size;
+
+        public:
+            typedef Dll_iterator<T> Iterator;
+
+            Dll( shared_ptr<Dll<T>> List ) {}
+
+            Dll( shared_ptr<T> arr, int n ) {}
+
+            Dll( shared_ptr<Node> node ) {}
+
+            Dll( int n ) {}
+
+            Dll() {
+                head_pointer = nullptr;
+                tail_pointer = nullptr;
+                size = 0;
+            }
+
+            virtual ~Dll() { }
+
+            shared_ptr<Node> front();
+    		shared_ptr<Node> back();
+            void push_back( const T& element );
+            void push_front( const T& element );
+            shared_ptr<Node> pop_back();
+            shared_ptr<Node> pop_front();
+            shared_ptr<Node> operator[] ( const int& place);
+            bool empty();
+            unsigned int get_size();
+            void clear();
+            void erase( shared_ptr<Node> pointer );
+            void insert( shared_ptr<Node> pointer, const T& element );
+            void remove( const T& element );
+            Dll& sort();
+            Dll& reverse();
+
+            inline friend std::ostream& operator<< (std::ostream& os, const Dll<T>& list ) {
+                shared_ptr<Node> pointer = list.head_pointer;
+                while (pointer != nullptr) {
+                    cout << " <- (" << pointer->value << ") -> ";
                     pointer = pointer->next_node;
                 }
                 cout << "nullptr" <<endl;
