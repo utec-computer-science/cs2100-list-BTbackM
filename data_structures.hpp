@@ -5,129 +5,115 @@
 
 using namespace std;
 
-namespace list_structure{
+namespace singly_linked_list{   // abbreviation Sl
+
     template <typename T>
-    class Node {
-        protected:
-            T value;
-            Node<T> * next;
+    struct Sll_node {
+        T value;
+        Sll_node<T> * next_node;
+    };
+
+    template <typename T>
+    class Sll_iterator {
+        private:
+            typedef Sll_node<T> Sll_node;
+            Sll_node * pointer;
 
         public:
-            Node(void){
+            Sll_iterator() { pointer = nullptr;};
+            Sll_iterator(Sll_node * ptr) { this->pointer = ptr; };
+
+            // Operators
+
+            void operator ++() {
+                this->pointer = this->pointer->next;
             }
 
-            ~Node(void){
+            void operator ++(int n) {
+                for (int i = 0; i < n; ++i)
+                    this->pointer = this->pointer->next;
+            }
+
+            T operator * () {
+                return this->pointer->value;
+            }
+
+            bool operator == (const Sll_iterator & it) {
+                return this->pointer == it.pointer;
+            }
+
+            bool operator != (const Sll_iterator & it) {
+                return this->pointer != it.pointer;
+            }
+
+            bool operator <= (const Sll_iterator & it) {
+                return this->pointer <= it.pointer;
+            }
+
+            bool operator >= (const Sll_iterator & it) {
+                return this->pointer >= it.pointer;
+            }
+
+            bool operator < (const Sll_iterator & it) {
+                return this->pointer < it.pointer;
+            }
+
+            bool operator > (const Sll_iterator & it) {
+                return this->pointer > it.pointer;
             }
     };
 
     template <typename T>
-    class Iterator {
-    private:
-        typedef Node<T> Node;
-        Node * pointer;
-
-    public:
-        Iterator(){ pointer = nullptr; }
-        Iterator(Node * ptr) { this->pointer = ptr; }
-
-        // Operators
-
-        void operator ++() = 0;
-
-        T operator * () = 0;
-
-        bool operator == (const Iterator & it) = 0;
-
-        bool operator != (const Iterator & it) = 0;
-    };
-
-    template <typename T>
-    class List {
-        protected:
-            Node<T> *head;
+    class Sll {
+        private:
+            typedef Sll_node<T> Node;
+            Node * head_pointer;
+            Node * tail_pointer;
+            unsigned int size;
 
         public:
-            List(List){
-    			// Constructor copia
+            typedef Sll_iterator<T> Iterator;
+
+            Sll( Sll<T> * List ) {}
+
+            Sll( T * arr, int n ) {}
+
+            Sll( Node * node ) {}
+
+            Sll( int n ) {}
+
+            Sll() {
+                head_pointer = nullptr;
+                tail_pointer = nullptr;
+                size = 0;
             }
 
-            List(T*){
-    			//Constructor  parametro,
-    			//llena una lista a partir de un array
+            virtual ~Sll() { }
+
+            Node * front();
+    		Node * back();
+            void push_back( const T& element );
+            void push_front( const T& element );
+            Node * pop_back();
+            Node * pop_front();
+            Node * operator[] ( const int& place);
+            bool empty();
+            unsigned int get_size();
+            void clear();
+            void erase( Node * pointer );
+            void insert( Node * pointer, const T& element );
+            void remove( const T& element );
+            Sll& sort();
+            Sll& reverse();
+
+            inline friend std::ostream& operator<< (std::ostream& os, const Sll<T>& list ) {
+                Node * pointer = list.head_pointer;
+                while (pointer != nullptr) {
+                    cout << pointer->value << " -> ";
+                    pointer = pointer->next_node;
+                }
+                cout << "nullptr" <<endl;
+                return os;
             }
-
-            List(Node<T>*){
-    			//Constructor por parametro,
-    			//retorna una lista con un nodo
-            }
-
-            List(int){
-    			//Constructor por parametro,
-    			//retorna un lista de randoms de tamaño n
-            }
-
-            List(void){
-    			//Constructor por defecto
-            }
-
-            ~List(void){
-            }
-
-    		// Retorna una referencia al primer elemento
-            T front(void) = 0;
-
-    		// Retorna una referencia al ultimo elemento
-    		T back(void) = 0;
-
-    		// Inserta un elemento al final
-            void push_back(const T& element) = 0;
-
-    		// Inserta un elemento al inicio
-            void push_front(const T& element) = 0;
-
-    		// Quita el ultimo elemento y retorna una referencia
-            T& pop_back(void) = 0;
-
-      		// Quita el primer elemento y retorna una referencia
-            T& pop_front(void) = 0;
-
-    		// Acceso aleatorio
-            T& operator[] (const int&) = 0;
-
-    		// la lista esta vacia?
-            bool empty(void) = 0;
-
-    		// retorna el tamaño de la lista
-            unsigned int size(void) = 0;
-
-    		// Elimina toda la lista
-            void clear(void) = 0;
-
-    		// Elimina un elemento en base a un puntero
-            void erase(Node<T>*) = 0;
-
-    		// Inserta un elemento  en base a un puntero
-            void insert(Node<T>*, const T&) = 0;
-
-    		// Elimina todos los elementos por similitud
-            void remove(const T&) = 0;
-
-    		// ordena la lista
-            List& sort(void) = 0;
-
-    		// invierte la lista
-            List& reverse(void) = 0;
-
-    		// Imprime la lista con cout
-            template<typename __T>
-            inline friend std::ostream& operator<< (std::ostream& , const List<__T>& );
-    };
-}
-
-namespace singly_linked_list{
-
-    using namespace list_structure;
-
-    // Code
-
+        };
 }
