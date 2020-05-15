@@ -5,6 +5,8 @@
 using namespace std;
 using namespace singly_linked_list;
 using namespace doubly_linked_list;
+using namespace circular_singly_linked_list;
+using namespace circular_doubly_linked_list;
 
 int main(int argc, char const *argv[]) {
     /*<-------------------------- singly_linked_list--------------------------->
@@ -86,9 +88,9 @@ int main(int argc, char const *argv[]) {
     cout << Sll_test.get_size() << endl;
     // cout << Sll_test;
 
-    */
+    //*/
 
-    //<-------------------------- doubly_linked_list--------------------------->
+    /*<-------------------------- doubly_linked_list--------------------------->
 
     doubly_linked_list::Dll<int> Dll_test;
 
@@ -168,5 +170,171 @@ int main(int argc, char const *argv[]) {
     // cout << Sll_test;
 
     //*/
+
+    /*<-------------------------- circular_singly_linked_list--------------------------->
+
+    circular_singly_linked_list::Csll<int> Csll_test;
+
+    // Testing push back and push_front
+    Csll_test.push_back(1);
+    Csll_test.push_back(2);
+    Csll_test.push_front(-1);
+    Csll_test.push_back(4);
+    Csll_test.push_back(5);
+    Csll_test.push_front(-3);
+
+    // Testing front and back functions
+    cout << Csll_test.front()->value << endl;
+    cout << Csll_test.back()->value << endl;
+
+    // Testing get_size and empty functions
+    cout << Csll_test.get_size() << endl;
+    cout << Csll_test.empty() << endl;
+
+    // Testing operator <<
+    cout << Csll_test;
+
+    // Testing pop_back
+    Csll_test.pop_back();
+
+    cout << Csll_test.get_size() << endl;
+    cout << Csll_test;
+
+    // Testing pop_front
+    Csll_test.pop_front();
+
+    cout << Csll_test.get_size() << endl;
+    cout << Csll_test;
+
+    // Testing random access
+    cout << Csll_test[0]->value << endl;
+
+    // Testing erase function
+    shared_ptr<Csll_node<int>> value2 = Csll_test[2];
+    Csll_test.erase(Csll_test.back());
+    Csll_test.erase(value2);
+
+    cout << Csll_test;
+
+    // Testing inset function
+    Csll_test.insert(Csll_test.front(), -9);
+    Csll_test.insert(Csll_test.back()->next_node, 8);
+
+    cout << Csll_test[1]->value << endl;
+    cout << Csll_test[2]->value << endl;
+    cout << Csll_test;
+
+    Csll_test.insert(Csll_test[2], 1);
+
+    cout << Csll_test[4]->value << endl;
+    cout << Csll_test.get_size() << endl;
+    cout << Csll_test;
+
+    // Testing remove function
+    Csll_test.remove(1);
+
+    cout << Csll_test;
+    cout << Csll_test.back()->value << endl;
+
+    // Testing sort function
+    Csll_test.insert(Csll_test[3], -5);
+    cout << Csll_test;
+
+    cout << Csll_test.sort();
+
+    // Testing reverse function
+    cout << Csll_test.reverse();
+
+    // Testing clear function
+    Csll_test.clear();
+
+    // cout << Sll_test;
+
+    cout << Csll_test.get_size() << endl;
+    // cout << Sll_test;
+
+    //*/
+
+    //<-------------------------- circular_doubly_linked_list--------------------------->
+
+    circular_doubly_linked_list::Cdll<int> Cdll_test;
+
+    // Testing push back and push_front
+    Cdll_test.push_back(1);
+    Cdll_test.push_back(2);
+    Cdll_test.push_front(-1);
+    Cdll_test.push_back(4);
+    Cdll_test.push_back(5);
+    Cdll_test.push_front(-3);
+
+    // Testing front and back functions
+    cout << Cdll_test.front()->value << endl;
+    cout << Cdll_test.back()->value << endl;
+
+    // Testing get_size and empty functions
+    cout << Cdll_test.get_size() << endl;
+    cout << Cdll_test.empty() << endl;
+
+    // Testing operator <<
+    cout << Cdll_test;
+
+    // Testing pop_back
+    Cdll_test.pop_back();
+
+    cout << Cdll_test.get_size() << endl;
+    cout << Cdll_test;
+
+    // Testing pop_front
+    Cdll_test.pop_front();
+
+    cout << Cdll_test.get_size() << endl;
+    cout << Cdll_test;
+
+    // Testing random access
+    cout << Cdll_test[0]->value << endl;
+
+    // Testing erase function
+    shared_ptr<Cdll_node<int>> value2 = Cdll_test[2];
+    Cdll_test.erase(Cdll_test.back());
+    Cdll_test.erase(value2);
+
+    cout << Cdll_test;
+
+    // Testing inset function
+    Cdll_test.insert(Cdll_test.front(), -9);
+    Cdll_test.insert(Cdll_test.back()->next_node, 8);
+
+    cout << Cdll_test[1]->value << endl;
+    cout << Cdll_test[2]->value << endl;
+
+    Cdll_test.insert(Cdll_test[2], 1);
+
+    cout << Cdll_test[4]->value << endl;
+    cout << Cdll_test;
+
+    // Testing remove function
+    Cdll_test.remove(1);
+
+    cout << Cdll_test;
+
+    // Testing sort function
+    Cdll_test.insert(Cdll_test[3], -5);
+    cout << Cdll_test;
+
+    cout << Cdll_test.sort();
+
+    // Testing reverse function
+    cout << Cdll_test.reverse();
+
+    // Testing clear function
+    Cdll_test.clear();
+
+    // cout << Sll_test;
+
+    cout << Cdll_test.get_size() << endl;
+    // cout << Sll_test;
+
+    //*/
+
     return 0;
 }
