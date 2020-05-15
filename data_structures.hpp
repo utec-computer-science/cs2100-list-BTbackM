@@ -340,6 +340,7 @@ namespace circular_singly_linked_list{   // abbreviation Csll
 
             inline friend std::ostream& operator<< (std::ostream& os, const Csll<T>& list ) {
                 shared_ptr<Node> pointer = list.head_pointer;
+                cout << "tail -> ";
                 do{
                     cout << "(" << pointer->value << ") -> ";
                     pointer = pointer->next_node;
@@ -458,11 +459,12 @@ namespace circular_doubly_linked_list{   // abbreviation Cdll
 
             inline friend std::ostream& operator<< (std::ostream& os, const Cdll<T>& list ) {
                 shared_ptr<Node> pointer = list.head_pointer;
+                cout << "tail ->";
                 while (pointer != nullptr) {
                     cout << " <- (" << pointer->value << ") -> ";
                     pointer = pointer->next_node;
                 }
-                cout << "nullptr" <<endl;
+                cout << " <- head" << endl;
                 return os;
             }
         };
