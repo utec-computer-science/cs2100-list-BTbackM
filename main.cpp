@@ -342,10 +342,10 @@ int main (int, char *[]){
     //*/
 
     //<-------------------------- traits_list--------------------------->
-    typedef ForwardListNode<int> forward_node_t;
+    typedef nodes::Sll_node<int> forward_node_t;
     typedef Node<int> node_test;
     typedef List<forward_node_t> list_t;
-    typedef list_t::Iterator iterator_t;
+    // typedef list_t::Iterator iterator_t;
 
     list_t list;
     list.push_back(1);
@@ -356,9 +356,9 @@ int main (int, char *[]){
     list.push_front(-3);
     list.pop_back();
     list.push_front(-9);
-    cout<< list.get_size()<<endl;
-    cout << list.back()<< endl;
-    cout << list.front()<< endl;
+    cout<< list.get_size() <<endl;
+    cout << list.back() << endl;
+    cout << list.front() << endl;
 
     cout << list;
 
