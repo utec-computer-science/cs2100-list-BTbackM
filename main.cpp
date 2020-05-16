@@ -360,7 +360,7 @@ int main (int, char *[]){
     cout << list.back() << endl;
     cout << list.front() << endl;
 
-    cout << list;
+    // cout << list;
 
     /*dlist_t dlist;
     dlist << 10 << 12 << 3;*/
