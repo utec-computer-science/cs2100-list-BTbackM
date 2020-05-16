@@ -111,6 +111,11 @@ int main (int, char*[]){
     return 1;
 }
 
+// Make
+
+clang++ -pthread -std=c++17 main -o cs2100-list-BTbackM
+./cs2100-list-BTbackM
+
 
 ```
 

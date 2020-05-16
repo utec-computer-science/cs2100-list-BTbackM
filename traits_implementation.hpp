@@ -8,7 +8,7 @@ using namespace std;
 
 namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     template <typename T>
-    class Node {
+    struct Node {
         public:
             typedef T value_t;
             // 1typedef unsigned int size_t;
@@ -37,12 +37,12 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename T>
-    class Sll_node : public Node<T> {
+    struct Sll_node : public Node<T> {
         public:
-        typedef typename Node<T>::value_t value_t;
-        public:
+            typedef typename Node<T>::value_t value_t;
+
             Sll_node<T>* next;
-        public:
+
             Sll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
@@ -57,15 +57,13 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename T>
-    class Dll_node : public Node<T> {
+    struct Dll_node : public Node<T> {
         public:
-        typedef typename Node<T>::value_t value_t;
+            typedef typename Node<T>::value_t value_t;
 
-        public:
             Dll_node<T>* next;
             Dll_node<T>* prev;
 
-        public:
             Dll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
@@ -80,12 +78,12 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename T>
-    class Csll_node : public Node<T> {
+    struct Csll_node : public Node<T> {
         public:
             typedef typename Node<T>::value_t value_t;
-        public:
+
             Csll_node<T>* next;
-        public:
+
             Csll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
@@ -100,12 +98,12 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename T>
-    class Cdll_node : public Node<T> {
+    struct Cdll_node : public Node<T> {
         public:
             typedef typename Node<T>::value_t value_t;
-        public:
+
             Cdll_node<T>* next;
-        public:
+
             Cdll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
@@ -275,16 +273,6 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
                 out << "Nothing to print in father" << endl;
                 return out;
             }
-
-            /*List& operator<< (const value_t& _value){
-                this->push_back(_value);
-                return *this;
-            }
-
-            List& operator>> (const value_t& _value){
-                this->push_front(_value);
-                return *this;
-            }*/
     };
 
     template <typename Node, typename ValueNode, int nodeType>
@@ -374,6 +362,21 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
                 size++;
             }
 
+            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
+                auto * new_node = new Sll_node<ValueNode>(element);
+                new_node->value = element;
+                new_node->next = nullptr;
+
+                if(*head == nullptr){
+                    *head = new_node;
+                    *tail = new_node;
+                }else{
+                    new_node->next = *head;
+                    *head = new_node;
+                }
+                size++;
+            }
+
             static void pop_back(Node** head, Node** tail, int& size){
                 if(size > 0){
                     Dll_node<ValueNode>* temp = *tail;
@@ -399,6 +402,21 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
                 }else{
                     (*tail)->next = new_node;
                     (*tail) = new_node;
+                }
+                size++;
+            }
+
+            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
+                auto * new_node = new Sll_node<ValueNode>(element);
+                new_node->value = element;
+                new_node->next = nullptr;
+
+                if(*head == nullptr){
+                    *head = new_node;
+                    *tail = new_node;
+                }else{
+                    new_node->next = *head;
+                    *head = new_node;
                 }
                 size++;
             }
@@ -434,6 +452,21 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
                 size++;
             }
 
+            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
+                auto * new_node = new Sll_node<ValueNode>(element);
+                new_node->value = element;
+                new_node->next = nullptr;
+
+                if(*head == nullptr){
+                    *head = new_node;
+                    *tail = new_node;
+                }else{
+                    new_node->next = *head;
+                    *head = new_node;
+                }
+                size++;
+            }
+
             static void pop_back(Node** head, Node** tail, int& size){
                 if(size > 0){
                     auto * temp = (*head);
@@ -454,12 +487,12 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
     }
 
     template< typename Node>  template <int nodeType>
-    void List<Node>::__pop_back__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, int& size) {
-        ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::pop_back(head,tail,size);
+    void List<Node>::__push_front__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, typename List<Node>::value_t element, int& size) {
+        ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::push_front(head,tail,element, size);
     }
 
     template< typename Node>  template <int nodeType>
-    void List<Node>::__push_front__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, typename List<Node>::value_t element, int& size) {
-        ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::push_front(head,tail,element, size);
+    void List<Node>::__pop_back__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, int& size) {
+        ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::pop_back(head,tail,size);
     }
 }
