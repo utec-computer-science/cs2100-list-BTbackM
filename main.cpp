@@ -342,20 +342,23 @@ int main (int, char *[]){
     //*/
 
     //<-------------------------- traits_list--------------------------->
-    typedef nodes::Sll_node<int> forward_node_t;
+    typedef nodes::Sll_node<int> sll_node_t;
+    typedef nodes::Dll_node<int> dll_node_t;
+    typedef nodes::Csll_node<int> csll_node_t;
+    typedef nodes::Cdll_node<int> cdll_node_t;
     typedef Node<int> node_test;
-    typedef List<forward_node_t> list_t;
+    typedef List<dll_node_t> list_t;
     // typedef list_t::Iterator iterator_t;
 
     list_t list;
     list.push_back(1);
     list.push_back(2);
-    list.push_front(-1);
+    // list.push_front(-1);
     list.push_back(4);
     list.push_back(5);
-    list.push_front(-3);
+    // list.push_front(-3);
     list.pop_back();
-    list.push_front(-9);
+    // list.push_front(-9);
     cout<< list.get_size() <<endl;
     cout << list.back() << endl;
     cout << list.front() << endl;

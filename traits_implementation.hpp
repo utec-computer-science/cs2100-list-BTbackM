@@ -306,15 +306,11 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
         public:
             static void push_back(Node** head_pointer, Node** tail_pointer, ValueNode element, int& size){
                 auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
+                new_node->value = element; new_node->next = nullptr;
                 if(*head_pointer == nullptr){
-                    *head_pointer = new_node;
-                    *tail_pointer = new_node;
+                    *head_pointer = *tail_pointer = new_node;
                 }else{
-                    auto temp = (*head_pointer);
-                    (*tail_pointer)-> next = new_node;
+                    (*tail_pointer)->next = new_node;
                     (*tail_pointer) = new_node;
                 }
                 size++;
@@ -322,12 +318,10 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
 
             static void push_front(Node** head_pointer, Node** tail_pointer, ValueNode element, int& size){
                 auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
+                new_node->value = element; new_node->next = nullptr;
 
                 if(*head_pointer == nullptr){
-                    *head_pointer = new_node;
-                    *tail_pointer = new_node;
+                    *head_pointer = *tail_pointer = new_node;
                 }else{
                     new_node->next = *head_pointer;
                     *head_pointer = new_node;
@@ -336,14 +330,19 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             static void pop_back(Node** head_pointer, Node** tail_pointer, int& size){
-                if(size > 0){
-                    auto * temp = (*head_pointer);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
+                if ( *head_pointer == *tail_pointer ){
+                    auto * tmp = *head_pointer;
+                    // delete head_pointer;
+                    size--;
+                    *head_pointer = *tail_pointer = nullptr;
+                } else {
+                    auto * tmp = *head_pointer;
+                    while (tmp->next != *tail_pointer){
+                        tmp = tmp->next;
                     }
-                    temp->next = (*head_pointer);
-                    delete (*tail_pointer);
-                    (*tail_pointer) = temp;
+                    *tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    (*tail_pointer)->next = nullptr;
                     size--;
                 }
             }
@@ -372,14 +371,21 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             static void pop_back(Node** head_pointer, Node** tail_pointer, int& size){
-                if(size > 0){
-                    Dll_node<ValueNode>* temp = *tail_pointer;
-                    *tail_pointer = (*tail_pointer)->prev;
+                if ( *head_pointer == *tail_pointer ){
+                    auto * tmp = *head_pointer;
+                    // delete head_pointer;
+                    size--;
+                    *head_pointer = *tail_pointer = nullptr;
+                } else {
+                    auto * tmp = *head_pointer;
+                    while (tmp->next != *tail_pointer){
+                        tmp = tmp->next;
+                    }
+                    *tail_pointer = tmp;
+                    // delete tmp->next_node;
                     (*tail_pointer)->next = nullptr;
-                    delete temp;
                     size--;
                 }
-
             }
     };
 
@@ -401,14 +407,19 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             static void pop_back(Node** head_pointer, Node** tail_pointer, int& size){
-                if(size > 0){
-                    auto * temp = (*head_pointer);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
+                if ( *head_pointer == *tail_pointer ){
+                    auto * tmp = *head_pointer;
+                    // delete head_pointer;
+                    size--;
+                    *head_pointer = *tail_pointer = nullptr;
+                } else {
+                    auto * tmp = *head_pointer;
+                    while (tmp->next != *tail_pointer){
+                        tmp = tmp->next;
                     }
-                    temp->next = (*head_pointer);
-                    delete (*tail_pointer);
-                    (*tail_pointer) = temp;
+                    *tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    (*tail_pointer)->next = nullptr;
                     size--;
                 }
             }
@@ -432,14 +443,19 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             static void pop_back(Node** head_pointer, Node** tail_pointer, int& size){
-                if(size > 0){
-                    auto * temp = (*head_pointer);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
+                if ( *head_pointer == *tail_pointer ){
+                    auto * tmp = *head_pointer;
+                    // delete head_pointer;
+                    size--;
+                    *head_pointer = *tail_pointer = nullptr;
+                } else {
+                    auto * tmp = *head_pointer;
+                    while (tmp->next != *tail_pointer){
+                        tmp = tmp->next;
                     }
-                    temp->next = (*head_pointer);
-                    delete (*tail_pointer);
-                    (*tail_pointer) = temp;
+                    *tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    (*tail_pointer)->next = nullptr;
                     size--;
                 }
             }
