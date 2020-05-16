@@ -11,10 +11,10 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     class Node {
         public:
             typedef T value_t;
-            typedef unsigned int size_t;
-        public:
+            // 1typedef unsigned int size_t;
+
             value_t value;
-        public:
+
             Node(const value_t& _value):value(_value){
             }
 
@@ -22,7 +22,7 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
               return 0;
             }
 
-            ~Node(void){
+            ~Node() {
             }
 
             value_t& operator*(void){
@@ -37,72 +37,93 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename T>
-    class ForwardListNode : public Node<T> {
+    class Sll_node : public Node<T> {
         public:
         typedef typename Node<T>::value_t value_t;
         public:
-            ForwardListNode<T>* next;
+            Sll_node<T>* next;
         public:
-            ForwardListNode(const T& _value):Node<T>(_value),next(nullptr){
+            Sll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
-            ~ForwardListNode(void){
+            ~Sll_node(void){
             }
 
             template <typename _T>
-            inline friend ostream& operator<< (ostream& _out, const ForwardListNode<_T>& _node){
+            inline friend ostream& operator<< (ostream& _out, const Sll_node<_T>& _node){
                 _out << "Nodo: [v: " <<  _node.value << ", p: " << _node.next << "]";
                 return _out;
             }
     };
 
     template <typename T>
-    class DoubleListNode : public Node<T> {
+    class Dll_node : public Node<T> {
         public:
         typedef typename Node<T>::value_t value_t;
 
         public:
-            DoubleListNode<T>* next;
-            DoubleListNode<T>* prev;
+            Dll_node<T>* next;
+            Dll_node<T>* prev;
 
         public:
-            DoubleListNode(const T& _value):Node<T>(_value),next(nullptr){
+            Dll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
-            ~DoubleListNode(void){
+            ~Dll_node(void){
             }
 
             template <typename _T>
-            inline friend ostream& operator<< (ostream& _out, const DoubleListNode<_T>& _node){
+            inline friend ostream& operator<< (ostream& _out, const Dll_node<_T>& _node){
                 _out << "Nodo: [v: " <<  _node.value << ", p_next: " << _node.next << ", p_prev: " << _node.next << "]";
                 return _out;
             }
     };
 
     template <typename T>
-    class CircularListNode : public Node<T> {
+    class Csll_node : public Node<T> {
         public:
             typedef typename Node<T>::value_t value_t;
         public:
-            CircularListNode<T>* next;
+            Csll_node<T>* next;
         public:
-            CircularListNode(const T& _value):Node<T>(_value),next(nullptr){
+            Csll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
 
-            ~CircularListNode(void){
+            ~Csll_node(void){
             }
 
             template <typename _T>
-            inline friend ostream& operator<< (ostream& _out, const CircularListNode<_T>& _node){
+            inline friend ostream& operator<< (ostream& _out, const Csll_node<_T>& _node){
+                _out << "Nodo: [v: " <<  _node.value << ", p_next: " << _node.next << ", p_prev: " << _node.next << "]";
+                return _out;
+            }
+    };
+
+    template <typename T>
+    class Cdll_node : public Node<T> {
+        public:
+            typedef typename Node<T>::value_t value_t;
+        public:
+            Cdll_node<T>* next;
+        public:
+            Cdll_node(const T& _value):Node<T>(_value),next(nullptr){
+            }
+
+            ~Cdll_node(void){
+            }
+
+            template <typename _T>
+            inline friend ostream& operator<< (ostream& _out, const Cdll_node<_T>& _node){
                 _out << "Nodo: [v: " <<  _node.value << ", p_next: " << _node.next << ", p_prev: " << _node.next << "]";
                 return _out;
             }
     };
 
     #define DEFAULT_NODE 0
-    #define FOWARD_NODE 1
-    #define DOUBLE_NODE 2
-    #define CIRCULAR_NODE 3
+    #define SLL_NODE 1
+    #define DLL_NODE 2
+    #define CSLL_NODE 3
+    #define CDLL_NODE 4
 
     template <typename T, typename NT>
     struct NodeTraits{
@@ -110,22 +131,27 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
     };
 
     template <typename NT>
-    struct NodeTraits< ForwardListNode<NT>, NT >{
-        static const int nodeType = FOWARD_NODE;
+    struct NodeTraits< Sll_node<NT>, NT >{
+        static const int nodeType = SLL_NODE;
     };
 
     template <typename NT>
-    struct NodeTraits< DoubleListNode<NT>, NT >{
-        static const int nodeType = DOUBLE_NODE;
+    struct NodeTraits< Dll_node<NT>, NT >{
+        static const int nodeType = DLL_NODE;
     };
 
     template <typename NT>
-    struct NodeTraits< CircularListNode<NT>, NT >{
-        static const int nodeType = CIRCULAR_NODE;
+    struct NodeTraits< Csll_node<NT>, NT >{
+        static const int nodeType = CSLL_NODE;
+    };
+
+    template <typename NT>
+    struct NodeTraits< Cdll_node<NT>, NT >{
+        static const int nodeType = CDLL_NODE;
     };
 }
 
-namespace iterators {
+namespace iterators { // One iterator
 
     using namespace nodes;
 
@@ -165,7 +191,7 @@ namespace iterators {
     };
 }
 
-namespace lists {
+namespace lists { // Sll, Dll, Csll, Cdll implementation
 
     using namespace nodes;
     using namespace iterators;
@@ -279,10 +305,10 @@ namespace lists {
     };
 
     template <typename Node, typename ValueNode>
-    class ListHelper<Node,ValueNode,FOWARD_NODE>{
+    class ListHelper<Node,ValueNode,SLL_NODE>{
         public:
             static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new ForwardListNode<ValueNode>(element);
+                auto * new_node = new Sll_node<ValueNode>(element);
                 new_node->value = element;
                 new_node->next = nullptr;
 
@@ -298,7 +324,7 @@ namespace lists {
             }
 
             static void push_front(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new ForwardListNode<ValueNode>(element);
+                auto * new_node = new Sll_node<ValueNode>(element);
                 new_node->value = element;
                 new_node->next = nullptr;
 
@@ -332,10 +358,10 @@ namespace lists {
     };
 
     template <typename Node, typename ValueNode>
-    class ListHelper<Node,ValueNode,DOUBLE_NODE>{
+    class ListHelper<Node,ValueNode,DLL_NODE>{
         public:
             static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto new_node = new DoubleListNode<ValueNode>(element);
+                auto new_node = new Dll_node<ValueNode>(element);
                 new_node->value = element;
                 if (!(*head)) {
                     (*head) = new_node;
@@ -350,7 +376,7 @@ namespace lists {
 
             static void pop_back(Node** head, Node** tail, int& size){
                 if(size > 0){
-                    DoubleListNode<ValueNode>* temp = *tail;
+                    Dll_node<ValueNode>* temp = *tail;
                     *tail = (*tail)->prev;
                     (*tail)->next = nullptr;
                     delete temp;
@@ -361,10 +387,10 @@ namespace lists {
     };
 
     template <typename Node, typename ValueNode>
-    class ListHelper<Node,ValueNode,CIRCULAR_NODE>{
+    class ListHelper<Node,ValueNode,CSLL_NODE>{
         public:
             static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new CircularListNode<ValueNode>(element);
+                auto * new_node = new Csll_node<ValueNode>(element);
                 new_node->value = element;
                 new_node->next = (*head);
                 if(*head == nullptr){
@@ -391,6 +417,36 @@ namespace lists {
             }
     };
 
+    template <typename Node, typename ValueNode>
+    class ListHelper<Node,ValueNode,CDLL_NODE>{
+        public:
+            static void push_back(Node** head, Node** tail, ValueNode element, int& size){
+                auto * new_node = new Cdll_node<ValueNode>(element);
+                new_node->value = element;
+                new_node->next = (*head);
+                if(*head == nullptr){
+                    *head = new_node;
+                    *tail = new_node;
+                }else{
+                    (*tail)->next = new_node;
+                    (*tail) = new_node;
+                }
+                size++;
+            }
+
+            static void pop_back(Node** head, Node** tail, int& size){
+                if(size > 0){
+                    auto * temp = (*head);
+                    for(int i = 0; i < size -2; ++i){
+                        temp = temp->next;
+                    }
+                    temp->next = (*head);
+                    delete (*tail);
+                    (*tail) = temp;
+                    size--;
+                }
+            }
+    };
 
     template< typename Node>  template <int nodeType>
     void List<Node>::__push_back__( typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, typename List<Node>::value_t element, int& size) {
