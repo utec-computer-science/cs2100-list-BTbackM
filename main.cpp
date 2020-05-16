@@ -1,14 +1,19 @@
 #include <iostream>
 #include "data_structures.hpp"
 #include "data_structures.cpp"
+#include "traits_implementation.hpp"
 
 using namespace std;
 using namespace singly_linked_list;
 using namespace doubly_linked_list;
 using namespace circular_singly_linked_list;
 using namespace circular_doubly_linked_list;
+using namespace nodes;
+using namespace iterators;
+using namespace lists;
 
-int main(int argc, char const *argv[]) {
+int main (int, char *[]){
+
     /*<-------------------------- singly_linked_list--------------------------->
 
     singly_linked_list::Sll<int> Sll_test;
@@ -255,7 +260,7 @@ int main(int argc, char const *argv[]) {
 
     //*/
 
-    //<-------------------------- circular_doubly_linked_list--------------------------->
+    /*<-------------------------- circular_doubly_linked_list--------------------------->
 
     circular_doubly_linked_list::Cdll<int> Cdll_test;
 
@@ -336,5 +341,29 @@ int main(int argc, char const *argv[]) {
 
     //*/
 
-    return 0;
+    //<-------------------------- traits_list--------------------------->
+    typedef ForwardListNode<int> forward_node_t;
+    typedef Node<int> node_test;
+    typedef List<forward_node_t> list_t;
+    typedef list_t::Iterator iterator_t;
+
+    list_t list;
+    list.push_back(1);
+    list.push_back(2);
+    list.push_front(-1);
+    list.push_back(4);
+    list.push_back(5);
+    list.push_front(-3);
+    list.pop_back();
+    list.push_front(-9);
+    cout<< list.get_size()<<endl;
+    cout << list.back()<< endl;
+    cout << list.front()<< endl;
+
+    cout << list;
+
+    /*dlist_t dlist;
+    dlist << 10 << 12 << 3;*/
+
+    return 1;
 }
