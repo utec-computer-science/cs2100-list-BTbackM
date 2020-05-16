@@ -41,7 +41,7 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
         public:
             typedef typename Node<T>::value_t value_t;
 
-            Sll_node<T>* next;
+            shared_ptr<Sll_node<T>> next;
 
             Sll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
@@ -61,8 +61,8 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
         public:
             typedef typename Node<T>::value_t value_t;
 
-            Dll_node<T>* next;
-            Dll_node<T>* prev;
+            shared_ptr<Dll_node<T>> next;
+            shared_ptr<Dll_node<T>> prev;
 
             Dll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
@@ -82,7 +82,7 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
         public:
             typedef typename Node<T>::value_t value_t;
 
-            Csll_node<T>* next;
+            shared_ptr<Csll_node<T>> next;
 
             Csll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
@@ -102,7 +102,7 @@ namespace nodes { // Node trait, Sll_Node, Dll_node, Csll node and Cdll node
         public:
             typedef typename Node<T>::value_t value_t;
 
-            Cdll_node<T>* next;
+            shared_ptr<Cdll_node<T>> next;
 
             Cdll_node(const T& _value):Node<T>(_value),next(nullptr){
             }
@@ -160,10 +160,10 @@ namespace iterators { // One iterator
         typedef typename node_t::value_t value_t;
 
     protected:
-        node_t * pointer;
+        shared_ptr<node_t> pointer;
 
     public:
-        Iterator (node_t* pointer = nullptr){
+        Iterator (shared_ptr<node_t> pointer = nullptr){
         }
 
         ~Iterator(void){
@@ -209,10 +209,10 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             List(const List&):head(nullptr){
             }
 
-            List(value_t*):head(nullptr){
+            List(shared_ptr<value_t>):head(nullptr){
             }
 
-            List(node_t*):head(nullptr){
+            List(shared_ptr<node_t>):head(nullptr){
             }
 
             List(int):head(nullptr){
@@ -225,14 +225,14 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             template<int nodeType>
-            void __push_back__(Node**,Node**,value_t,int&);
+            void __push_back__(shared_ptr<Node>*,shared_ptr<Node>*,value_t,int&);
 
             void push_back(const value_t& element) {
                 __push_back__<NodeTraits<node_t,value_t>::nodeType>(&head,&tail,element,size);
             }
 
             template<int nodeType>
-            void __push_front__(Node**,Node**,value_t,int&);
+            void __push_front__(shared_ptr<Node>*,shared_ptr<Node>*,value_t,int&);
 
             void push_front(const value_t& element) {
                 __push_front__<NodeTraits<node_t,value_t>::nodeType>(&head,&tail,element,size);
@@ -246,7 +246,7 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
             }
 
             template<int nodeType>
-            void __pop_back__(Node**,Node**,int& size);
+            void __pop_back__(shared_ptr<Node>*,shared_ptr<Node>*,int& size);
 
             void pop_back() {
                 __pop_back__<NodeTraits<node_t,value_t>::nodeType>(&head,&tail,size);
@@ -278,16 +278,16 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
     template <typename Node, typename ValueNode, int nodeType>
     class ListHelper{
         public:
-            static void push_back(Node** head, Node** tail, ValueNode element, int& size) {
+            static void push_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size) {
                 cout << "Hola no tengo trait definido" << endl;
             }
-            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
+            static void push_front(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
                 cout << "Hola no tengo trait definido" << endl;
             }
-            static void pop_back(Node** head, Node** tail, int& size){
+            static void pop_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, int& size){
                 cout << "Hola no tengo trait definido" << endl;
             }
-            static void print(Node** head, Node** tail, ValueNode element){
+            static void print(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element){
                 cout << "Hola no tengo trait definido" << endl;
             }
     };
@@ -295,51 +295,50 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
     template <typename Node, typename ValueNode>
     class ListHelper<Node,ValueNode,SLL_NODE>{
         public:
-            static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    auto temp = (*head);
-                    (*tail)-> next = new_node;
-                    (*tail) = new_node;
+            static void push_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                shared_ptr<Node> new_node = make_shared<Node>();
+                new_node->value = element; new_node->next_node = nullptr;
+                if (head_pointer == nullptr) {
+                    tail_pointer = head_pointer = new_node;
+                } else {
+                    tail_pointer->next_node = new_node;
+                    tail_pointer = new_node;
                 }
                 size++;
             }
 
-            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    new_node->next = *head;
-                    *head = new_node;
+            static void push_front(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                shared_ptr<Node> new_node = make_shared<Node>();
+                new_node->value = element; new_node->next_node = head_pointer;
+                if ( head_pointer == nullptr ) {
+                    head_pointer = tail_pointer = new_node;
+                } else {
+                    head_pointer = new_node;
                 }
                 size++;
             }
 
-            static void pop_back(Node** head, Node** tail, int& size){
-                if(size > 0){
-                    auto * temp = (*head);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
-                    }
-                    temp->next = (*head);
-                    delete (*tail);
-                    (*tail) = temp;
+            static void pop_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, int& size){
+                if ( head_pointer == tail_pointer ){
+                    shared_ptr<Node> tmp = head_pointer;
+                    // delete head_pointer;
                     size--;
+                    head_pointer = tail_pointer = nullptr;
+                    return tmp;
+                } else {
+                    shared_ptr<Node> tmp = head_pointer;
+                    while (tmp->next_node != tail_pointer){
+                        tmp = tmp->next_node;
+                    }
+                    tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    tail_pointer->next_node = nullptr;
+                    size--;
+                    return tmp;
                 }
             }
 
-            static void print(Node** head, Node** tail, ValueNode element){
+            static void print(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element){
 
             }
 
@@ -348,89 +347,100 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
     template <typename Node, typename ValueNode>
     class ListHelper<Node,ValueNode,DLL_NODE>{
         public:
-            static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto new_node = new Dll_node<ValueNode>(element);
-                new_node->value = element;
-                if (!(*head)) {
-                    (*head) = new_node;
+            static void push_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                if ( head_pointer == nullptr ) {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = nullptr;
+                    head_pointer = tail_pointer = new_node;
                 } else {
-                    new_node->prev = (*tail);
-                    new_node->next = nullptr;
-                    (*tail)->next = new_node;
-                }
-                *tail = new_node;
-                size++;
-            }
-
-            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    new_node->next = *head;
-                    *head = new_node;
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = tail_pointer; new_node->next_node = nullptr;
+                    tail_pointer->next_node = new_node;
+                    tail_pointer = new_node;
                 }
                 size++;
             }
 
-            static void pop_back(Node** head, Node** tail, int& size){
-                if(size > 0){
-                    Dll_node<ValueNode>* temp = *tail;
-                    *tail = (*tail)->prev;
-                    (*tail)->next = nullptr;
-                    delete temp;
+            static void push_front(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                if ( head_pointer == nullptr ) {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = nullptr;
+                    head_pointer = tail_pointer = new_node;
+                } else {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = head_pointer;
+                    head_pointer->prev_node = new_node;
+                    head_pointer = new_node;
+                }
+                size++;
+            }
+
+            static void pop_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, int& size){
+                if ( head_pointer == tail_pointer ){
+                    shared_ptr<Node> tmp = head_pointer;
+                    // delete tmp;
                     size--;
+                    head_pointer = tail_pointer = nullptr;
+                    return tmp;
+                } else {
+                    shared_ptr<Node> tmp = head_pointer;
+                    while (tmp->next_node != tail_pointer){
+                        tmp = tmp->next_node;
+                    }
+                    tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    tail_pointer->next_node = nullptr;
+                    size--;
+                    return tmp;
                 }
-
             }
     };
 
     template <typename Node, typename ValueNode>
     class ListHelper<Node,ValueNode,CSLL_NODE>{
         public:
-            static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Csll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = (*head);
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    (*tail)->next = new_node;
-                    (*tail) = new_node;
+            static void push_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                shared_ptr<Node> new_node = make_shared<Node>();
+                new_node->value = element; new_node->next_node = head_pointer;
+                if (head_pointer == nullptr) {
+                    tail_pointer = head_pointer = new_node;
+                } else {
+                    tail_pointer->next_node = new_node;
+                    tail_pointer = new_node;
                 }
                 size++;
             }
 
-            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    new_node->next = *head;
-                    *head = new_node;
+            static void push_front(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                shared_ptr<Node> new_node = make_shared<Node>();
+                new_node->value = element; new_node->next_node = head_pointer;
+                if ( head_pointer == nullptr ) {
+                    head_pointer = tail_pointer = new_node;
+                    tail_pointer->next_node = head_pointer;
+                } else {
+                    head_pointer = new_node;
+                    tail_pointer->next_node = head_pointer;
                 }
                 size++;
             }
 
-            static void pop_back(Node** head, Node** tail, int& size){
-                if(size > 0){
-                    auto * temp = (*head);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
-                    }
-                    temp->next = (*head);
-                    delete (*tail);
-                    (*tail) = temp;
+            static void pop_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, int& size){
+                if ( head_pointer == tail_pointer ){
+                    shared_ptr<Node> tmp = head_pointer;
+                    // delete head_pointer;
                     size--;
+                    head_pointer = tail_pointer = nullptr;
+                    return tmp;
+                } else {
+                    shared_ptr<Node> tmp = head_pointer;
+                    while (tmp->next_node != tail_pointer){
+                        tmp = tmp->next_node;
+                    }
+                    tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    tail_pointer->next_node = head_pointer;
+                    size--;
+                    return tmp;
                 }
             }
     };
@@ -438,61 +448,67 @@ namespace lists { // Sll, Dll, Csll, Cdll implementation
     template <typename Node, typename ValueNode>
     class ListHelper<Node,ValueNode,CDLL_NODE>{
         public:
-            static void push_back(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Cdll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = (*head);
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    (*tail)->next = new_node;
-                    (*tail) = new_node;
+            static void push_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                if ( head_pointer == nullptr ) {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = nullptr;
+                    head_pointer = tail_pointer = new_node;
+                } else {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = tail_pointer; new_node->next_node = nullptr;
+                    tail_pointer->next_node = new_node;
+                    tail_pointer = new_node;
                 }
                 size++;
             }
 
-            static void push_front(Node** head, Node** tail, ValueNode element, int& size){
-                auto * new_node = new Sll_node<ValueNode>(element);
-                new_node->value = element;
-                new_node->next = nullptr;
-
-                if(*head == nullptr){
-                    *head = new_node;
-                    *tail = new_node;
-                }else{
-                    new_node->next = *head;
-                    *head = new_node;
+            static void push_front(shared_ptr<Node>* head, shared_ptr<Node>* tail, ValueNode element, int& size){
+                if ( head_pointer == nullptr ) {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = nullptr;
+                    head_pointer = tail_pointer = new_node;
+                } else {
+                    shared_ptr<Node> new_node = make_shared<Node>();
+                    new_node->value = element; new_node->prev_node = nullptr; new_node->next_node = head_pointer;
+                    head_pointer->prev_node = new_node;
+                    head_pointer = new_node;
                 }
                 size++;
             }
 
-            static void pop_back(Node** head, Node** tail, int& size){
-                if(size > 0){
-                    auto * temp = (*head);
-                    for(int i = 0; i < size -2; ++i){
-                        temp = temp->next;
-                    }
-                    temp->next = (*head);
-                    delete (*tail);
-                    (*tail) = temp;
+            static void pop_back(shared_ptr<Node>* head, shared_ptr<Node>* tail, int& size){
+                if ( head_pointer == tail_pointer ){
+                    shared_ptr<Node> tmp = head_pointer;
+                    // delete tmp;
                     size--;
+                    head_pointer = tail_pointer = nullptr;
+                    return tmp;
+                } else {
+                    shared_ptr<Node> tmp = head_pointer;
+                    while (tmp->next_node != tail_pointer){
+                        tmp = tmp->next_node;
+                    }
+                    tail_pointer = tmp;
+                    // delete tmp->next_node;
+                    tail_pointer->next_node = nullptr;
+                    size--;
+                    return tmp;
                 }
             }
     };
 
     template< typename Node>  template <int nodeType>
-    void List<Node>::__push_back__( typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, typename List<Node>::value_t element, int& size) {
+    void List<Node>::__push_back__( shared_ptr<typename List<Node>::node_t> * head, shared_ptr<typename List<Node>::node_t> * tail, typename List<Node>::value_t element, int& size) {
             ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::push_back(head,tail,element, size);
     }
 
     template< typename Node>  template <int nodeType>
-    void List<Node>::__push_front__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, typename List<Node>::value_t element, int& size) {
+    void List<Node>::__push_front__(shared_ptr<typename List<Node>::node_t> * head, shared_ptr<typename List<Node>::node_t> * tail, typename List<Node>::value_t element, int& size) {
         ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::push_front(head,tail,element, size);
     }
 
     template< typename Node>  template <int nodeType>
-    void List<Node>::__pop_back__(typename List<Node>::node_t ** head, typename List<Node>::node_t ** tail, int& size) {
+    void List<Node>::__pop_back__(shared_ptr<typename List<Node>::node_t> * head, shared_ptr<typename List<Node>::node_t>* tail, int& size) {
         ListHelper<List<Node>::node_t,List<Node>::value_t,nodeType>::pop_back(head,tail,size);
     }
 }
